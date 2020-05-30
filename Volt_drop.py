@@ -4,13 +4,13 @@ import cmath
 import numpy as np
 
 try:
-    # 11000  # Sending End Voltage Level
+    # Sending End Voltage Level # Example uses 11000
     VS_L_L = int(
         input("Please Enter the Sending End Voltage in units of volts: "))
-    # 400# Recieving End Voltage Level
+    #Recieving End Voltage Level # Example uses 400
     VR_L_L = int(
         input("Please Enter the Recieving End Voltage in units of volts: "))
-    # 11000  # the current and impedance at this voltage level
+    # the current and impedance at this voltage level # Example uses 11000
     Vref = int(input(
         "Please Enter the Voltage at which the current and impedance will be refeered to in units of volts: "))
 except ValueError as e:
@@ -76,14 +76,28 @@ I_400 = Load_1.Calc_I()  # Load current at the voltage the load is connected to
 I_11000 = Load_1.Calc_I()*(Load_1.V_L_L/VS_L_L)
 
 # Calculate the Voltage Drops
-IRZT = I_11000*(Zt)
-Act_VS_Ph = math.sqrt((VS_Ph + IRZT.real)**2 + IRZT.imag**2)
+irzt = I_11000*(Zt)
+Act_VS_Ph = math.sqrt((VS_Ph + irzt.real)**2 + irzt.imag**2)
 # actual Sending End Voltage with that load and system of impedances
 Act_VS_L_L = Act_VS_Ph*math.sqrt(3)
 volt_diff = Act_VS_L_L - VS_L_L
+
+#Nested loop that monitors the % voltdrop on the system.
+if volt_diff <= 0.1*VS_L_L:
+    vd = "less than 10%"
+    if volt_diff <= 0.05*VS_L_L:
+        vd = "Less than 5%"
+    elif volt_diff >= 0.05 * VS_L_L:
+        vd = "greater than 5%"
+else:
+    vd = "Greater than 10%"
+
 
 print("The Load current measured at the load is {:.2f} A".format(I_400))
 print("The Load current measured on the HV side is {:.2f} A".format(I_11000))
 print("The Impedance of system with reference to Vref {:.2f} Ohms".format(Zt))
 print("The Voltage drop of the system {:.2f} V".format(volt_diff))
+print("The voltdrop is {}".format(vd))
 
+
+#INCLUDE A NESTED IF STATEMENT FOR THE RESULTS THAT INCLUDES ELIFS 
